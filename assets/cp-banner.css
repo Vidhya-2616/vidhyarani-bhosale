@@ -213,10 +213,15 @@
   background: var(--cp-box-bg, #fff);
 }
 
-.cp-banner__heading {
+/* Extra specificity so the theme's own h1 style cannot override the font */
+.cp-banner .cp-banner__heading {
+  font-family: var(--cp-font);
   font-size: var(--cp-heading-size, 70px);
   font-weight: 500;
+  font-style: normal;
   line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--cp-heading-color, #000);
 }
 
