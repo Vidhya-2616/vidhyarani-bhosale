@@ -87,8 +87,8 @@
             "show_plus": true,
             "plus_x": 44,
             "plus_y": 62,
-            "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_x": 46,
+            "m_plus_y": 69
           }
         },
         "tile_2": {
@@ -98,8 +98,8 @@
             "show_plus": true,
             "plus_x": 85,
             "plus_y": 52,
-            "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_x": 77,
+            "m_plus_y": 73
           }
         },
         "tile_3": {
@@ -110,7 +110,7 @@
             "plus_x": 63,
             "plus_y": 20,
             "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_y": 31
           }
         },
         "tile_4": {
@@ -120,8 +120,8 @@
             "show_plus": true,
             "plus_x": 78,
             "plus_y": 18,
-            "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_x": 80,
+            "m_plus_y": 21
           }
         },
         "tile_5": {
@@ -131,8 +131,8 @@
             "show_plus": true,
             "plus_x": 52,
             "plus_y": 26,
-            "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_x": 43,
+            "m_plus_y": 67
           }
         },
         "tile_6": {
@@ -142,8 +142,8 @@
             "show_plus": true,
             "plus_x": 76,
             "plus_y": 52,
-            "m_plus_x": 65,
-            "m_plus_y": 14
+            "m_plus_x": 81,
+            "m_plus_y": 46
           }
         }
       },
