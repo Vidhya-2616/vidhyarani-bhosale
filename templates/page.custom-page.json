@@ -83,10 +83,10 @@
         "tile_1": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "black-leather-bag",
             "show_plus": true,
-            "plus_x": 62,
-            "plus_y": 56,
+            "plus_x": 44,
+            "plus_y": 62,
             "m_plus_x": 65,
             "m_plus_y": 14
           }
@@ -94,7 +94,7 @@
         "tile_2": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "blue-silk-tuxedo",
             "show_plus": true,
             "plus_x": 85,
             "plus_y": 52,
@@ -105,7 +105,7 @@
         "tile_3": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "chequered-red-shirt",
             "show_plus": true,
             "plus_x": 63,
             "plus_y": 20,
@@ -116,9 +116,9 @@
         "tile_4": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "classic-leather-jacket",
             "show_plus": true,
-            "plus_x": 73,
+            "plus_x": 78,
             "plus_y": 18,
             "m_plus_x": 65,
             "m_plus_y": 14
@@ -127,10 +127,10 @@
         "tile_5": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "classic-varsity-top",
             "show_plus": true,
             "plus_x": 52,
-            "plus_y": 11,
+            "plus_y": 26,
             "m_plus_x": 65,
             "m_plus_y": 14
           }
@@ -138,10 +138,10 @@
         "tile_6": {
           "type": "tile",
           "settings": {
-            "product": "",
+            "product": "dark-denim-top",
             "show_plus": true,
             "plus_x": 76,
-            "plus_y": 24,
+            "plus_y": 52,
             "m_plus_x": 65,
             "m_plus_y": 14
           }
