@@ -1,0 +1,805 @@
+{{ 'cp-grid.css' | asset_url | stylesheet_tag }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Lustria&display=swap">
+
+{%- liquid
+  assign s = section.settings
+
+  comment
+    Desktop values
+  endcomment
+  assign circle_alpha = s.plus_circle_opacity | divided_by: 100.0
+  assign circle_bg = s.plus_circle_color | color_modify: 'alpha', circle_alpha
+  assign circle_bg_hover = s.plus_circle_hover_color | color_modify: 'alpha', circle_alpha
+  assign heading_lh = s.heading_line_height | divided_by: 100.0
+  assign plus_stroke = s.plus_stroke | divided_by: 10.0
+
+  comment
+    Mobile values
+  endcomment
+  assign m_circle_alpha = s.m_plus_circle_opacity | divided_by: 100.0
+  assign m_circle_bg = s.m_plus_circle_color | color_modify: 'alpha', m_circle_alpha
+  assign m_circle_bg_hover = s.m_plus_circle_hover_color | color_modify: 'alpha', m_circle_alpha
+  assign m_heading_lh = s.m_heading_line_height | divided_by: 100.0
+  assign m_plus_stroke = s.m_plus_stroke | divided_by: 10.0
+  assign m_heading_text = s.m_heading_text | default: s.heading_text
+
+  comment
+    Popup values
+  endcomment
+  assign pop_overlay_alpha = s.pop_overlay_opacity | divided_by: 100.0
+  assign pop_overlay = s.pop_overlay_color | color_modify: 'alpha', pop_overlay_alpha
+  assign pop_close_stroke = s.pop_close_stroke | divided_by: 10.0
+  assign m_pop_close_stroke = s.m_pop_close_stroke | divided_by: 10.0
+  assign pop_color_label_m = s.m_pop_color_label | default: s.pop_color_label
+  assign pop_size_label_m = s.m_pop_size_label | default: s.pop_size_label
+
+  assign sizes_attr = '(min-width: 1440px) 433px, (min-width: 750px) 30vw, 50vw'
+-%}
+
+<section
+  class="cp-grid"
+  id="cp-grid-{{ section.id }}"
+  style="
+    --cp-grid-bg: {{ s.bg_color }};
+    --cp-grid-pt: {{ s.pad_top }}px;
+    --cp-grid-pb: {{ s.pad_bottom }}px;
+    --cp-grid-max-w: {{ s.max_width }}px;
+    --cp-grid-side-pad: {{ s.side_pad }}px;
+    --cp-grid-heading-size: {{ s.heading_size }}px;
+    --cp-grid-heading-lh: {{ heading_lh }};
+    --cp-grid-heading-color: {{ s.heading_color }};
+    --cp-grid-heading-align: {{ s.heading_align }};
+    --cp-grid-heading-gap: {{ s.heading_gap }}px;
+    --cp-grid-gap: {{ s.grid_gap }}px;
+    --cp-grid-tile-h: {{ s.tile_height }}px;
+    --cp-grid-tile-bg: {{ s.tile_bg }};
+    --cp-grid-plus-circle: {{ s.plus_circle_size }}px;
+    --cp-grid-plus-bg: {{ circle_bg }};
+    --cp-grid-plus-bg-hover: {{ circle_bg_hover }};
+    --cp-grid-plus-size: {{ s.plus_icon_size }}px;
+    --cp-grid-plus-stroke: {{ plus_stroke }}px;
+    --cp-grid-plus-color: {{ s.plus_icon_color }};
+    --cp-m-grid-bg: {{ s.m_bg_color }};
+    --cp-m-grid-pt: {{ s.m_pad_top }}px;
+    --cp-m-grid-pb: {{ s.m_pad_bottom }}px;
+    --cp-m-grid-side-pad: {{ s.m_side_pad }}px;
+    --cp-m-grid-heading-size: {{ s.m_heading_size }}px;
+    --cp-m-grid-heading-lh: {{ m_heading_lh }};
+    --cp-m-grid-heading-color: {{ s.m_heading_color }};
+    --cp-m-grid-heading-align: {{ s.m_heading_align }};
+    --cp-m-grid-heading-gap: {{ s.m_heading_gap }}px;
+    --cp-m-grid-gap: {{ s.m_grid_gap }}px;
+    --cp-m-grid-tile-ratio: {{ s.m_tile_ratio }};
+    --cp-m-grid-plus-circle: {{ s.m_plus_circle_size }}px;
+    --cp-m-grid-plus-bg: {{ m_circle_bg }};
+    --cp-m-grid-plus-bg-hover: {{ m_circle_bg_hover }};
+    --cp-m-grid-plus-size: {{ s.m_plus_icon_size }}px;
+    --cp-m-grid-plus-stroke: {{ m_plus_stroke }}px;
+    --cp-m-grid-plus-color: {{ s.m_plus_icon_color }};
+  "
+>
+  <div class="cp-grid__inner">
+    {%- if s.heading_text != blank or m_heading_text != blank -%}
+      <h2 class="cp-grid__heading">
+        <span class="cp-d-only">{{ s.heading_text }}</span>
+        <span class="cp-m-only">{{ m_heading_text }}</span>
+      </h2>
+    {%- endif -%}
+
+    <div class="cp-grid__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign product = block.settings.product
+          assign img = product.featured_image
+        -%}
+        <div class="cp-grid__tile" {{ block.shopify_attributes }}>
+          <div class="cp-grid__media">
+            {%- if img != blank -%}
+              {{
+                img
+                | image_url: width: 1299
+                | image_tag:
+                  widths: '433, 650, 866, 1299',
+                  sizes: sizes_attr,
+                  loading: 'lazy',
+                  class: 'cp-grid__img',
+                  alt: img.alt | default: product.title
+              }}
+            {%- else -%}
+              {{ 'product-apparel-1' | placeholder_svg_tag: 'cp-grid__placeholder' }}
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.show_plus -%}
+            <div
+              class="cp-grid__hotspot"
+              style="
+                --cp-grid-x: {{ block.settings.plus_x }}%;
+                --cp-grid-y: {{ block.settings.plus_y }}%;
+                --cp-m-grid-x: {{ block.settings.m_plus_x }}%;
+                --cp-m-grid-y: {{ block.settings.m_plus_y }}%;
+              "
+            >
+              <button
+                type="button"
+                class="cp-grid__plus"
+                data-cp-grid-plus
+                {% if product != blank %}
+                  data-product-id="{{ product.id }}"
+                  data-product-handle="{{ product.handle }}"
+                  data-product-title="{{ product.title | escape }}"
+                  data-product-url="{{ product.url }}"
+                  data-product-price="{{ product.price | money | escape }}"
+                {% endif %}
+                aria-haspopup="dialog"
+                aria-label="{% if product != blank %}Quick view: {{ product.title | escape }}{% else %}Quick view{% endif %}"
+              >
+                <span class="cp-grid__plus-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+    <div
+      class="cp-pop-wrap"
+      style="
+        --cp-pop-overlay: {{ pop_overlay }};
+        --cp-pop-anim: {{ s.pop_anim_ms }}ms;
+        --cp-pop-card-bg: {{ s.pop_card_bg }};
+        --cp-pop-card-w: {{ s.pop_card_w }}px;
+        --cp-pop-card-h: {{ s.pop_card_h }}px;
+        --cp-pop-close-size: {{ s.pop_close_size }}px;
+        --cp-pop-close-color: {{ s.pop_close_color }};
+        --cp-pop-close-stroke: {{ pop_close_stroke }}px;
+        --cp-pop-title-size: {{ s.pop_title_size }}px;
+        --cp-pop-title-color: {{ s.pop_title_color }};
+        --cp-pop-price-size: {{ s.pop_price_size }}px;
+        --cp-pop-price-color: {{ s.pop_price_color }};
+        --cp-pop-desc-size: {{ s.pop_desc_size }}px;
+        --cp-pop-desc-color: {{ s.pop_desc_color }};
+        --cp-pop-desc-lines: {{ s.pop_desc_lines }};
+        --cp-pop-label-size: {{ s.pop_label_size }}px;
+        --cp-pop-label-color: {{ s.pop_label_color }};
+        --cp-pop-color-size: {{ s.pop_color_size }}px;
+        --cp-pop-color-text: {{ s.pop_color_text }};
+        --cp-pop-color-border: {{ s.pop_color_border }};
+        --cp-pop-color-sel-bg: {{ s.pop_color_sel_bg }};
+        --cp-pop-color-sel-text: {{ s.pop_color_sel_text }};
+        --cp-pop-size-size: {{ s.pop_size_size }}px;
+        --cp-pop-size-text: {{ s.pop_size_text }};
+        --cp-pop-size-bg: {{ s.pop_size_bg }};
+        --cp-pop-size-border: {{ s.pop_size_border }};
+        --cp-pop-size-picked-bg: {{ s.pop_size_picked_bg }};
+        --cp-pop-size-picked-text: {{ s.pop_size_picked_text }};
+        --cp-pop-msg-size: {{ s.pop_msg_size }}px;
+        --cp-pop-msg-color: {{ s.pop_msg_color }};
+        --cp-pop-list-bg: {{ s.pop_list_bg }};
+        --cp-pop-list-text: {{ s.pop_list_text }};
+        --cp-pop-list-hover-bg: {{ s.pop_list_hover_bg }};
+        --cp-pop-list-hover-text: {{ s.pop_list_hover_text }};
+        --cp-pop-list-h: {{ s.pop_list_h }}px;
+        --cp-pop-list-row: {{ s.pop_list_row }}px;
+        --cp-pop-btn-size: {{ s.pop_btn_size }}px;
+        --cp-pop-btn-bg: {{ s.pop_btn_bg }};
+        --cp-pop-btn-text: {{ s.pop_btn_text }};
+        --cp-pop-btn-hover-bg: {{ s.pop_btn_hover_bg }};
+        --cp-pop-btn-hover-text: {{ s.pop_btn_hover_text }};
+        --cp-m-pop-card-bg: {{ s.m_pop_card_bg }};
+        --cp-m-pop-card-w: {{ s.m_pop_card_w }}px;
+        --cp-m-pop-card-h: {{ s.m_pop_card_h }}px;
+        --cp-m-pop-close-size: {{ s.m_pop_close_size }}px;
+        --cp-m-pop-close-color: {{ s.m_pop_close_color }};
+        --cp-m-pop-close-stroke: {{ m_pop_close_stroke }}px;
+        --cp-m-pop-title-size: {{ s.m_pop_title_size }}px;
+        --cp-m-pop-title-color: {{ s.m_pop_title_color }};
+        --cp-m-pop-price-size: {{ s.m_pop_price_size }}px;
+        --cp-m-pop-price-color: {{ s.m_pop_price_color }};
+        --cp-m-pop-desc-size: {{ s.m_pop_desc_size }}px;
+        --cp-m-pop-desc-color: {{ s.m_pop_desc_color }};
+        --cp-m-pop-desc-lines: {{ s.m_pop_desc_lines }};
+        --cp-m-pop-label-size: {{ s.m_pop_label_size }}px;
+        --cp-m-pop-label-color: {{ s.m_pop_label_color }};
+        --cp-m-pop-color-size: {{ s.m_pop_color_size }}px;
+        --cp-m-pop-color-text: {{ s.m_pop_color_text }};
+        --cp-m-pop-color-border: {{ s.m_pop_color_border }};
+        --cp-m-pop-color-sel-bg: {{ s.m_pop_color_sel_bg }};
+        --cp-m-pop-color-sel-text: {{ s.m_pop_color_sel_text }};
+        --cp-m-pop-size-size: {{ s.m_pop_size_size }}px;
+        --cp-m-pop-size-text: {{ s.m_pop_size_text }};
+        --cp-m-pop-size-bg: {{ s.m_pop_size_bg }};
+        --cp-m-pop-size-border: {{ s.m_pop_size_border }};
+        --cp-m-pop-size-picked-bg: {{ s.m_pop_size_picked_bg }};
+        --cp-m-pop-size-picked-text: {{ s.m_pop_size_picked_text }};
+        --cp-m-pop-msg-size: {{ s.m_pop_msg_size }}px;
+        --cp-m-pop-msg-color: {{ s.m_pop_msg_color }};
+        --cp-m-pop-list-bg: {{ s.m_pop_list_bg }};
+        --cp-m-pop-list-text: {{ s.m_pop_list_text }};
+        --cp-m-pop-list-hover-bg: {{ s.m_pop_list_hover_bg }};
+        --cp-m-pop-list-hover-text: {{ s.m_pop_list_hover_text }};
+        --cp-m-pop-list-h: {{ s.m_pop_list_h }}px;
+        --cp-m-pop-list-row: {{ s.m_pop_list_row }}px;
+        --cp-m-pop-btn-size: {{ s.m_pop_btn_size }}px;
+        --cp-m-pop-btn-bg: {{ s.m_pop_btn_bg }};
+        --cp-m-pop-btn-text: {{ s.m_pop_btn_text }};
+        --cp-m-pop-btn-hover-bg: {{ s.m_pop_btn_hover_bg }};
+        --cp-m-pop-btn-hover-text: {{ s.m_pop_btn_hover_text }};
+      "
+    >
+      <div
+        class="cp-pop"
+        data-cp-pop
+        hidden
+        aria-hidden="true"
+        {% if s.pop_editor_preview %}data-preview="true"{% endif %}
+        data-size-placeholder="{{ s.pop_size_placeholder | escape }}"
+        data-m-size-placeholder="{{ s.m_pop_size_placeholder | default: s.pop_size_placeholder | escape }}"
+        data-size-error="{{ s.pop_size_error | escape }}"
+        data-m-size-error="{{ s.m_pop_size_error | default: s.pop_size_error | escape }}"
+        data-add-label="{{ s.pop_add_label | escape }}"
+        data-m-add-label="{{ s.m_pop_add_label | default: s.pop_add_label | escape }}"
+        data-added-label="{{ s.pop_added_label | escape }}"
+        data-m-added-label="{{ s.m_pop_added_label | default: s.pop_added_label | escape }}"
+        {% if s.gwp_enabled %}
+          data-gwp-enabled="true"
+          data-gwp-color="{{ s.gwp_color | escape }}"
+          data-gwp-size="{{ s.gwp_size | escape }}"
+          data-gwp-handle="{{ s.gwp_handle | handleize }}"
+          {% if s.gwp_product != blank %}
+            {% assign gv = s.gwp_product.selected_or_first_available_variant %}
+            data-gwp-id="{{ gv.id }}"
+            data-gwp-available="{{ gv.available }}"
+          {% endif %}
+        {% endif %}
+      >
+        <div class="cp-pop__backdrop" data-cp-pop-close></div>
+
+        <div
+          class="cp-pop__card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cp-pop-title-{{ section.id }}"
+          tabindex="-1"
+        >
+          <button type="button" class="cp-pop__close" data-cp-pop-close aria-label="Close">
+            <span aria-hidden="true"></span>
+          </button>
+
+          <div class="cp-pop__top">
+            <div class="cp-pop__media">
+              <img class="cp-pop__img" data-cp-pop-img alt="" width="240" height="280">
+            </div>
+            <div class="cp-pop__info">
+              <h3 class="cp-pop__title" id="cp-pop-title-{{ section.id }}" data-cp-pop-title></h3>
+              <p class="cp-pop__price" data-cp-pop-price></p>
+              <p class="cp-pop__desc" data-cp-pop-desc></p>
+            </div>
+          </div>
+
+          <div class="cp-pop__field" data-cp-pop-color-field>
+            <span class="cp-pop__label">
+              <span class="cp-d-only">{{ s.pop_color_label }}</span>
+              <span class="cp-m-only">{{ pop_color_label_m }}</span>
+            </span>
+            <div class="cp-pop__colors" data-cp-pop-colors role="radiogroup" aria-label="{{ s.pop_color_label | escape }}">
+              <span class="cp-pop__slider" data-cp-pop-slider aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="cp-pop__field" data-cp-pop-size-field>
+            <span class="cp-pop__label">
+              <span class="cp-d-only">{{ s.pop_size_label }}</span>
+              <span class="cp-m-only">{{ pop_size_label_m }}</span>
+            </span>
+            <div class="cp-pop__size">
+              <button
+                type="button"
+                class="cp-pop__size-btn"
+                data-cp-pop-size-btn
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span class="cp-pop__size-text" data-cp-pop-size-text>{{ s.pop_size_placeholder }}</span>
+                <span class="cp-pop__chev" aria-hidden="true">
+                  <svg viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 0.75L6 5.25L11 0.75" stroke="currentColor" stroke-width="1.5"/></svg>
+                </span>
+              </button>
+              <ul class="cp-pop__list" role="listbox" data-cp-pop-list hidden></ul>
+            </div>
+          </div>
+
+          <p class="cp-pop__msg" role="alert" data-cp-pop-msg></p>
+
+          <button type="button" class="cp-pop__add" data-cp-pop-add>
+            <span data-cp-pop-add-text>{{ s.pop_add_label }}</span>
+            <svg class="cp-pop__arrow" viewBox="0 0 34 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 5H33M28.5 0.75L33 5L28.5 9.25" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+
+        <script type="application/json" data-cp-pop-data>
+          {
+          {%- assign sep = '' -%}
+          {%- for block in section.blocks -%}
+            {%- assign p = block.settings.product -%}
+            {%- if p != blank -%}
+              {{ sep }}
+              {{ p.handle | json }}: {
+                "id": {{ p.id }},
+                "title": {{ p.title | json }},
+                "desc": {{ p.description | strip_html | strip_newlines | truncate: 400 | json }},
+                "price": {{ p.selected_or_first_available_variant.price | money | json }},
+                "image": {% if p.featured_image != blank %}{{ p.featured_image | image_url: width: 480 | json }}{% else %}""{% endif %},
+                "imageAlt": {{ p.featured_image.alt | default: p.title | json }},
+                "options": [
+                  {%- for o in p.options_with_values -%}
+                    {
+                      "name": {{ o.name | json }},
+                      "values": [
+                        {%- for v in o.values -%}
+                          {
+                            "name": {{ v.name | json }},
+                            "swatch": {% if v.swatch.color != blank %}{{ v.swatch.color | color_to_hex | json }}{% else %}""{% endif %}
+                          }{% unless forloop.last %},{% endunless %}
+                        {%- endfor -%}
+                      ]
+                    }{% unless forloop.last %},{% endunless %}
+                  {%- endfor -%}
+                ],
+                "variants": [
+                  {%- for v in p.variants -%}
+                    {
+                      "id": {{ v.id }},
+                      "o": [{{ v.option1 | json }}{% if v.option2 != nil %}, {{ v.option2 | json }}{% endif %}{% if v.option3 != nil %}, {{ v.option3 | json }}{% endif %}],
+                      "available": {{ v.available }},
+                      "price": {{ v.price | money | json }},
+                      "img": {% if v.featured_image != blank %}{{ v.featured_image | image_url: width: 480 | json }}{% else %}""{% endif %}
+                    }{% unless forloop.last %},{% endunless %}
+                  {%- endfor -%}
+                ]
+              }
+              {%- assign sep = ',' -%}
+            {%- endif -%}
+          {%- endfor -%}
+          }
+        </script>
+      </div>
+    </div>
+
+<div
+  class="cp-dr-wrap"
+  style="
+    --cp-dr-overlay: {{ pop_overlay }};
+    --cp-dr-anim: {{ s.pop_anim_ms }}ms;
+        --cp-dr-w: {{ s.dr_w }}px;
+        --cp-dr-bg: {{ s.dr_bg }};
+        --cp-dr-line: {{ s.dr_line_color }};
+        --cp-dr-close: {{ s.dr_close_color }};
+        --cp-dr-title-size: {{ s.dr_title_size }}px;
+        --cp-dr-title-color: {{ s.dr_title_color }};
+        --cp-dr-cont-color: {{ s.dr_cont_color }};
+        --cp-dr-text-size: {{ s.dr_text_size }}px;
+        --cp-dr-text-color: {{ s.dr_text_color }};
+        --cp-dr-price-color: {{ s.dr_price_color }};
+        --cp-dr-btn-size: {{ s.dr_btn_size }}px;
+        --cp-dr-btn-bg: {{ s.dr_btn_bg }};
+        --cp-dr-btn-text: {{ s.dr_btn_text }};
+        --cp-dr-btn-hover-bg: {{ s.dr_btn_hover_bg }};
+        --cp-dr-btn-hover-text: {{ s.dr_btn_hover_text }};
+        --cp-m-dr-w: {{ s.m_dr_w }}%;
+        --cp-m-dr-bg: {{ s.m_dr_bg }};
+        --cp-m-dr-line: {{ s.m_dr_line_color }};
+        --cp-m-dr-close: {{ s.m_dr_close_color }};
+        --cp-m-dr-title-size: {{ s.m_dr_title_size }}px;
+        --cp-m-dr-title-color: {{ s.m_dr_title_color }};
+        --cp-m-dr-cont-color: {{ s.m_dr_cont_color }};
+        --cp-m-dr-text-size: {{ s.m_dr_text_size }}px;
+        --cp-m-dr-text-color: {{ s.m_dr_text_color }};
+        --cp-m-dr-price-color: {{ s.m_dr_price_color }};
+        --cp-m-dr-btn-size: {{ s.m_dr_btn_size }}px;
+        --cp-m-dr-btn-bg: {{ s.m_dr_btn_bg }};
+        --cp-m-dr-btn-text: {{ s.m_dr_btn_text }};
+        --cp-m-dr-btn-hover-bg: {{ s.m_dr_btn_hover_bg }};
+        --cp-m-dr-btn-hover-text: {{ s.m_dr_btn_hover_text }};
+  "
+>
+  <div class="cp-dr" data-cp-dr hidden aria-hidden="true" data-remove-label="{{ s.dr_remove_label | escape }}">
+    <div class="cp-dr__backdrop" data-cp-dr-close></div>
+    <aside
+      class="cp-dr__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cp-dr-title-{{ section.id }}"
+      tabindex="-1"
+      data-cp-dr-panel
+    >
+      <div class="cp-dr__head">
+        <h3 class="cp-dr__title" id="cp-dr-title-{{ section.id }}">
+          <span class="cp-d-only">{{ s.dr_title }}</span>
+          <span class="cp-m-only">{{ s.m_dr_title | default: s.dr_title }}</span>
+        </h3>
+        <button type="button" class="cp-dr__close" data-cp-dr-close aria-label="Close"><span aria-hidden="true"></span></button>
+      </div>
+
+      <ul class="cp-dr__items" data-cp-dr-items></ul>
+
+      <div class="cp-dr__foot">
+        <div class="cp-dr__sub">
+          <span>
+            <span class="cp-d-only">{{ s.dr_subtotal_label }}</span>
+            <span class="cp-m-only">{{ s.m_dr_subtotal_label | default: s.dr_subtotal_label }}</span>
+          </span>
+          <span data-cp-dr-total></span>
+        </div>
+        <a class="cp-dr__checkout" href="{{ routes.root_url }}checkout">
+          <span class="cp-d-only">{{ s.dr_checkout_label }}</span>
+          <span class="cp-m-only">{{ s.m_dr_checkout_label | default: s.dr_checkout_label }}</span>
+        </a>
+        <button type="button" class="cp-dr__cont" data-cp-dr-close>
+          <span class="cp-d-only">{{ s.dr_cont_label }}</span>
+          <span class="cp-m-only">{{ s.m_dr_cont_label | default: s.dr_cont_label }}</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+</section>
+
+<script src="{{ 'cp-grid.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "CP Grid",
+  "tag": "section",
+  "class": "cp-grid-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Desktop: section" },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "range", "id": "pad_top", "label": "Top padding", "min": 0, "max": 200, "step": 2, "unit": "px", "default": 90 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 2, "unit": "px", "default": 90 },
+    { "type": "range", "id": "max_width", "label": "Content max width", "min": 1000, "max": 1500, "step": 5, "unit": "px", "default": 1340 },
+    { "type": "range", "id": "side_pad", "label": "Side padding (tablet)", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Desktop: heading" },
+    { "type": "text", "id": "heading_text", "label": "Heading text", "default": "Tisso vison in the wild" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 36 },
+    { "type": "range", "id": "heading_line_height", "label": "Heading line height", "min": 80, "max": 160, "step": 2, "unit": "%", "default": 120 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#000000" },
+    {
+      "type": "select",
+      "id": "heading_align",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 0, "max": 80, "step": 1, "unit": "px", "default": 30 },
+
+    { "type": "header", "content": "Desktop: grid" },
+    { "type": "range", "id": "grid_gap", "label": "Gap between tiles", "min": 0, "max": 60, "step": 1, "unit": "px", "default": 20 },
+    { "type": "range", "id": "tile_height", "label": "Tile height", "min": 300, "max": 600, "step": 3, "unit": "px", "default": 444 },
+    { "type": "color", "id": "tile_bg", "label": "Tile background (while loading)", "default": "#EEEEEE" },
+
+    { "type": "header", "content": "Desktop: plus icon" },
+    { "type": "range", "id": "plus_circle_size", "label": "Circle size", "min": 12, "max": 48, "step": 1, "unit": "px", "default": 22 },
+    { "type": "color", "id": "plus_circle_color", "label": "Circle color", "default": "#F8F8F8" },
+    { "type": "color", "id": "plus_circle_hover_color", "label": "Circle hover color", "default": "#FFFFFF" },
+    { "type": "range", "id": "plus_circle_opacity", "label": "Circle opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 90 },
+    { "type": "range", "id": "plus_icon_size", "label": "Plus size", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 8 },
+    {
+      "type": "range",
+      "id": "plus_stroke",
+      "label": "Plus thickness",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "default": 15,
+      "info": "In tenths of a pixel. 15 = 1.5px."
+    },
+    { "type": "color", "id": "plus_icon_color", "label": "Plus color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: section" },
+    { "type": "color", "id": "m_bg_color", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "range", "id": "m_pad_top", "label": "Top padding", "min": 0, "max": 120, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "m_pad_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "m_side_pad", "label": "Side padding", "min": 0, "max": 60, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Mobile: heading" },
+    {
+      "type": "text",
+      "id": "m_heading_text",
+      "label": "Heading text",
+      "default": "Tisso vison in the wild",
+      "info": "Leave empty to use the desktop heading text."
+    },
+    { "type": "range", "id": "m_heading_size", "label": "Heading size", "min": 12, "max": 48, "step": 1, "unit": "px", "default": 24 },
+    { "type": "range", "id": "m_heading_line_height", "label": "Heading line height", "min": 80, "max": 160, "step": 2, "unit": "%", "default": 120 },
+    { "type": "color", "id": "m_heading_color", "label": "Heading color", "default": "#000000" },
+    {
+      "type": "select",
+      "id": "m_heading_align",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    { "type": "range", "id": "m_heading_gap", "label": "Space below heading", "min": 0, "max": 60, "step": 1, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Mobile: grid" },
+    { "type": "range", "id": "m_grid_gap", "label": "Gap between tiles", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 4 },
+    {
+      "type": "range",
+      "id": "m_tile_ratio",
+      "label": "Tile height",
+      "min": 80,
+      "max": 140,
+      "step": 1,
+      "unit": "%",
+      "default": 110,
+      "info": "As a % of the tile width. 110 = Figma proportions (169 x 186)."
+    },
+
+    { "type": "header", "content": "Mobile: plus icon" },
+    { "type": "range", "id": "m_plus_circle_size", "label": "Circle size", "min": 10, "max": 40, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "m_plus_circle_color", "label": "Circle color", "default": "#F8F8F8" },
+    { "type": "color", "id": "m_plus_circle_hover_color", "label": "Circle hover color", "default": "#FFFFFF" },
+    { "type": "range", "id": "m_plus_circle_opacity", "label": "Circle opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 90 },
+    { "type": "range", "id": "m_plus_icon_size", "label": "Plus size", "min": 3, "max": 20, "step": 1, "unit": "px", "default": 6 },
+    {
+      "type": "range",
+      "id": "m_plus_stroke",
+      "label": "Plus thickness",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "default": 10,
+      "info": "In tenths of a pixel. 10 = 1px."
+    },
+    { "type": "color", "id": "m_plus_icon_color", "label": "Plus color", "default": "#000000" },
+    {"type": "header", "content": "Popup: overlay and animation"},
+    {"type": "color", "id": "pop_overlay_color", "label": "Overlay color", "default": "#000000"},
+    {"type": "range", "id": "pop_overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 50},
+    {"type": "range", "id": "pop_anim_ms", "label": "Animation duration", "min": 0, "max": 600, "step": 50, "unit": "ms", "default": 300, "info": "Used for the open/close fade and the color slide. 0 = no animation."},
+    {"type": "checkbox", "id": "pop_editor_preview", "label": "Open popup automatically in the theme editor", "default": false, "info": "Only works inside the theme editor, so you can style the popup live. Turn off when done."},
+    {"type": "header", "content": "Popup desktop: card and close icon"},
+    {"type": "color", "id": "pop_card_bg", "label": "Card background", "default": "#FFFFFF"},
+    {"type": "range", "id": "pop_card_w", "label": "Card width", "min": 280, "max": 380, "step": 1, "unit": "px", "default": 311},
+    {"type": "range", "id": "pop_card_h", "label": "Card minimum height", "min": 400, "max": 500, "step": 1, "unit": "px", "default": 447},
+    {"type": "range", "id": "pop_close_size", "label": "Close icon size", "min": 8, "max": 32, "step": 1, "unit": "px", "default": 12},
+    {"type": "range", "id": "pop_close_stroke", "label": "Close icon thickness", "min": 5, "max": 40, "step": 5, "default": 15, "info": "In tenths of a pixel. 15 = 1.5px."},
+    {"type": "color", "id": "pop_close_color", "label": "Close icon color", "default": "#000000"},
+    {"type": "header", "content": "Popup desktop: product info"},
+    {"type": "range", "id": "pop_title_size", "label": "Title size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "pop_title_color", "label": "Title color", "default": "#000000"},
+    {"type": "range", "id": "pop_price_size", "label": "Price size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "pop_price_color", "label": "Price color", "default": "#000000"},
+    {"type": "range", "id": "pop_desc_size", "label": "Description size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14},
+    {"type": "color", "id": "pop_desc_color", "label": "Description color", "default": "#000000"},
+    {"type": "range", "id": "pop_desc_lines", "label": "Description max lines", "min": 2, "max": 8, "step": 1, "default": 4},
+    {"type": "header", "content": "Popup desktop: labels and texts"},
+    {"type": "text", "id": "pop_color_label", "label": "Color label", "default": "Color"},
+    {"type": "text", "id": "pop_size_label", "label": "Size label", "default": "Size"},
+    {"type": "range", "id": "pop_label_size", "label": "Label size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14},
+    {"type": "color", "id": "pop_label_color", "label": "Label color", "default": "#333333"},
+    {"type": "header", "content": "Popup desktop: color options"},
+    {"type": "range", "id": "pop_color_size", "label": "Option text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 18},
+    {"type": "color", "id": "pop_color_text", "label": "Option text color", "default": "#000000"},
+    {"type": "color", "id": "pop_color_border", "label": "Border color", "default": "#000000"},
+    {"type": "color", "id": "pop_color_sel_bg", "label": "Selected background", "default": "#000000"},
+    {"type": "color", "id": "pop_color_sel_text", "label": "Selected text color", "default": "#FFFFFF"},
+    {"type": "header", "content": "Popup desktop: size dropdown field"},
+    {"type": "text", "id": "pop_size_placeholder", "label": "Placeholder text", "default": "Choose your size"},
+    {"type": "range", "id": "pop_size_size", "label": "Text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "pop_size_text", "label": "Text color", "default": "#000000"},
+    {"type": "color", "id": "pop_size_bg", "label": "Background", "default": "#FFFFFF"},
+    {"type": "color", "id": "pop_size_border", "label": "Border color", "default": "#000000"},
+    {"type": "color", "id": "pop_size_picked_bg", "label": "Background after a size is picked", "default": "#FFFFFF"},
+    {"type": "color", "id": "pop_size_picked_text", "label": "Text after a size is picked", "default": "#000000"},
+    {"type": "text", "id": "pop_size_error", "label": "Message when no size is chosen", "default": "Please choose your size"},
+    {"type": "range", "id": "pop_msg_size", "label": "Message size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 12},
+    {"type": "color", "id": "pop_msg_color", "label": "Message color", "default": "#C00000"},
+    {"type": "header", "content": "Popup desktop: size list"},
+    {"type": "color", "id": "pop_list_bg", "label": "List background", "default": "#FFFFFF"},
+    {"type": "color", "id": "pop_list_text", "label": "Size text color", "default": "#000000"},
+    {"type": "color", "id": "pop_list_hover_bg", "label": "Hover background", "default": "#000000"},
+    {"type": "color", "id": "pop_list_hover_text", "label": "Hover text color", "default": "#FFFFFF"},
+    {"type": "range", "id": "pop_list_h", "label": "List visible height", "min": 36, "max": 216, "step": 3, "unit": "px", "default": 99},
+    {"type": "range", "id": "pop_list_row", "label": "Row height", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 36},
+    {"type": "header", "content": "Popup desktop: add to cart button"},
+    {"type": "text", "id": "pop_add_label", "label": "Button text", "default": "Add to cart"},
+    {"type": "text", "id": "pop_added_label", "label": "Text after adding", "default": "Added to cart"},
+    {"type": "range", "id": "pop_btn_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "pop_btn_bg", "label": "Background", "default": "#000000"},
+    {"type": "color", "id": "pop_btn_text", "label": "Text and arrow color", "default": "#FFFFFF"},
+    {"type": "color", "id": "pop_btn_hover_bg", "label": "Hover background", "default": "#222222"},
+    {"type": "color", "id": "pop_btn_hover_text", "label": "Hover text color", "default": "#FFFFFF"},
+    {"type": "header", "content": "Popup mobile: card and close icon"},
+    {"type": "color", "id": "m_pop_card_bg", "label": "Card background", "default": "#FFFFFF"},
+    {"type": "range", "id": "m_pop_card_w", "label": "Card width", "min": 280, "max": 380, "step": 1, "unit": "px", "default": 311},
+    {"type": "range", "id": "m_pop_card_h", "label": "Card minimum height", "min": 400, "max": 500, "step": 1, "unit": "px", "default": 447},
+    {"type": "range", "id": "m_pop_close_size", "label": "Close icon size", "min": 8, "max": 32, "step": 1, "unit": "px", "default": 12},
+    {"type": "range", "id": "m_pop_close_stroke", "label": "Close icon thickness", "min": 5, "max": 40, "step": 5, "default": 15, "info": "In tenths of a pixel. 15 = 1.5px."},
+    {"type": "color", "id": "m_pop_close_color", "label": "Close icon color", "default": "#000000"},
+    {"type": "header", "content": "Popup mobile: product info"},
+    {"type": "range", "id": "m_pop_title_size", "label": "Title size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "m_pop_title_color", "label": "Title color", "default": "#000000"},
+    {"type": "range", "id": "m_pop_price_size", "label": "Price size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "m_pop_price_color", "label": "Price color", "default": "#000000"},
+    {"type": "range", "id": "m_pop_desc_size", "label": "Description size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 12},
+    {"type": "color", "id": "m_pop_desc_color", "label": "Description color", "default": "#000000"},
+    {"type": "range", "id": "m_pop_desc_lines", "label": "Description max lines", "min": 2, "max": 8, "step": 1, "default": 4},
+    {"type": "header", "content": "Popup mobile: labels and texts"},
+    {"type": "text", "id": "m_pop_color_label", "label": "Color label", "default": "Color"},
+    {"type": "text", "id": "m_pop_size_label", "label": "Size label", "default": "Size"},
+    {"type": "range", "id": "m_pop_label_size", "label": "Label size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14},
+    {"type": "color", "id": "m_pop_label_color", "label": "Label color", "default": "#333333"},
+    {"type": "header", "content": "Popup mobile: color options"},
+    {"type": "range", "id": "m_pop_color_size", "label": "Option text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 18},
+    {"type": "color", "id": "m_pop_color_text", "label": "Option text color", "default": "#000000"},
+    {"type": "color", "id": "m_pop_color_border", "label": "Border color", "default": "#000000"},
+    {"type": "color", "id": "m_pop_color_sel_bg", "label": "Selected background", "default": "#000000"},
+    {"type": "color", "id": "m_pop_color_sel_text", "label": "Selected text color", "default": "#FFFFFF"},
+    {"type": "header", "content": "Popup mobile: size dropdown field"},
+    {"type": "text", "id": "m_pop_size_placeholder", "label": "Placeholder text", "default": "Choose your size"},
+    {"type": "range", "id": "m_pop_size_size", "label": "Text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "m_pop_size_text", "label": "Text color", "default": "#000000"},
+    {"type": "color", "id": "m_pop_size_bg", "label": "Background", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_pop_size_border", "label": "Border color", "default": "#000000"},
+    {"type": "color", "id": "m_pop_size_picked_bg", "label": "Background after a size is picked", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_pop_size_picked_text", "label": "Text after a size is picked", "default": "#000000"},
+    {"type": "text", "id": "m_pop_size_error", "label": "Message when no size is chosen", "default": "Please choose your size"},
+    {"type": "range", "id": "m_pop_msg_size", "label": "Message size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 12},
+    {"type": "color", "id": "m_pop_msg_color", "label": "Message color", "default": "#C00000"},
+    {"type": "header", "content": "Popup mobile: size list"},
+    {"type": "color", "id": "m_pop_list_bg", "label": "List background", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_pop_list_text", "label": "Size text color", "default": "#000000"},
+    {"type": "color", "id": "m_pop_list_hover_bg", "label": "Hover background", "default": "#000000"},
+    {"type": "color", "id": "m_pop_list_hover_text", "label": "Hover text color", "default": "#FFFFFF"},
+    {"type": "range", "id": "m_pop_list_h", "label": "List visible height", "min": 36, "max": 216, "step": 3, "unit": "px", "default": 99},
+    {"type": "range", "id": "m_pop_list_row", "label": "Row height", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 36},
+    {"type": "header", "content": "Popup mobile: add to cart button"},
+    {"type": "text", "id": "m_pop_add_label", "label": "Button text", "default": "Add to cart"},
+    {"type": "text", "id": "m_pop_added_label", "label": "Text after adding", "default": "Added to cart"},
+    {"type": "range", "id": "m_pop_btn_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "m_pop_btn_bg", "label": "Background", "default": "#000000"},
+    {"type": "color", "id": "m_pop_btn_text", "label": "Text and arrow color", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_pop_btn_hover_bg", "label": "Hover background", "default": "#222222"},
+    {"type": "color", "id": "m_pop_btn_hover_text", "label": "Hover text color", "default": "#FFFFFF"},
+    {"type": "header", "content": "Gift with purchase"},
+    {"type": "checkbox", "id": "gwp_enabled", "label": "Add a free-gift product automatically", "default": true},
+    {"type": "product", "id": "gwp_product", "label": "Gift product", "info": "Choose \"Soft Winter Jacket\". Its first available variant is added."},
+    {"type": "text", "id": "gwp_handle", "label": "Gift product handle (backup)", "default": "soft-winter-jacket", "info": "Used when no product is picked above. The handle is the last part of the product URL."},
+    {"type": "text", "id": "gwp_color", "label": "Trigger: color", "default": "Black"},
+    {"type": "text", "id": "gwp_size", "label": "Trigger: size", "default": "Medium", "info": "M and Medium are treated the same."},
+    {"type": "header", "content": "Drawer: shared"},
+    {"type": "text", "id": "dr_remove_label", "label": "Remove button text", "default": "Remove"},
+    {"type": "header", "content": "Drawer desktop: panel"},
+    {"type": "range", "id": "dr_w", "label": "Panel width", "min": 320, "max": 520, "step": 2, "unit": "px", "default": 420},
+    {"type": "color", "id": "dr_bg", "label": "Panel background", "default": "#FFFFFF"},
+    {"type": "color", "id": "dr_line_color", "label": "Divider color", "default": "#E5E5E5"},
+    {"type": "color", "id": "dr_close_color", "label": "Close icon color", "default": "#000000"},
+    {"type": "header", "content": "Drawer desktop: heading and texts"},
+    {"type": "text", "id": "dr_title", "label": "Heading text", "default": "Added to cart"},
+    {"type": "range", "id": "dr_title_size", "label": "Heading size", "min": 14, "max": 32, "step": 1, "unit": "px", "default": 20},
+    {"type": "color", "id": "dr_title_color", "label": "Heading color", "default": "#000000"},
+    {"type": "text", "id": "dr_subtotal_label", "label": "Subtotal label", "default": "Subtotal"},
+    {"type": "text", "id": "dr_cont_label", "label": "Continue shopping text", "default": "Continue shopping"},
+    {"type": "color", "id": "dr_cont_color", "label": "Continue shopping color", "default": "#000000"},
+    {"type": "header", "content": "Drawer desktop: product rows"},
+    {"type": "range", "id": "dr_text_size", "label": "Text size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14},
+    {"type": "color", "id": "dr_text_color", "label": "Text color", "default": "#000000"},
+    {"type": "color", "id": "dr_price_color", "label": "Price color", "default": "#000000"},
+    {"type": "header", "content": "Drawer desktop: checkout button"},
+    {"type": "text", "id": "dr_checkout_label", "label": "Button text", "default": "Checkout"},
+    {"type": "range", "id": "dr_btn_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "dr_btn_bg", "label": "Background", "default": "#000000"},
+    {"type": "color", "id": "dr_btn_text", "label": "Text color", "default": "#FFFFFF"},
+    {"type": "color", "id": "dr_btn_hover_bg", "label": "Hover background", "default": "#222222"},
+    {"type": "color", "id": "dr_btn_hover_text", "label": "Hover text color", "default": "#FFFFFF"},
+    {"type": "header", "content": "Drawer mobile: panel"},
+    {"type": "range", "id": "m_dr_w", "label": "Panel width", "min": 80, "max": 100, "step": 1, "unit": "%", "default": 92},
+    {"type": "color", "id": "m_dr_bg", "label": "Panel background", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_dr_line_color", "label": "Divider color", "default": "#E5E5E5"},
+    {"type": "color", "id": "m_dr_close_color", "label": "Close icon color", "default": "#000000"},
+    {"type": "header", "content": "Drawer mobile: heading and texts"},
+    {"type": "text", "id": "m_dr_title", "label": "Heading text", "default": "Added to cart"},
+    {"type": "range", "id": "m_dr_title_size", "label": "Heading size", "min": 14, "max": 32, "step": 1, "unit": "px", "default": 18},
+    {"type": "color", "id": "m_dr_title_color", "label": "Heading color", "default": "#000000"},
+    {"type": "text", "id": "m_dr_subtotal_label", "label": "Subtotal label", "default": "Subtotal"},
+    {"type": "text", "id": "m_dr_cont_label", "label": "Continue shopping text", "default": "Continue shopping"},
+    {"type": "color", "id": "m_dr_cont_color", "label": "Continue shopping color", "default": "#000000"},
+    {"type": "header", "content": "Drawer mobile: product rows"},
+    {"type": "range", "id": "m_dr_text_size", "label": "Text size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14},
+    {"type": "color", "id": "m_dr_text_color", "label": "Text color", "default": "#000000"},
+    {"type": "color", "id": "m_dr_price_color", "label": "Price color", "default": "#000000"},
+    {"type": "header", "content": "Drawer mobile: checkout button"},
+    {"type": "text", "id": "m_dr_checkout_label", "label": "Button text", "default": "Checkout"},
+    {"type": "range", "id": "m_dr_btn_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16},
+    {"type": "color", "id": "m_dr_btn_bg", "label": "Background", "default": "#000000"},
+    {"type": "color", "id": "m_dr_btn_text", "label": "Text color", "default": "#FFFFFF"},
+    {"type": "color", "id": "m_dr_btn_hover_bg", "label": "Hover background", "default": "#222222"},
+    {"type": "color", "id": "m_dr_btn_hover_text", "label": "Hover text color", "default": "#FFFFFF"}
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Product tile",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "checkbox", "id": "show_plus", "label": "Show + icon", "default": true },
+
+        { "type": "header", "content": "Desktop: plus position" },
+        {
+          "type": "range",
+          "id": "plus_x",
+          "label": "Horizontal position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 = left edge of the tile, 100 = right edge."
+        },
+        {
+          "type": "range",
+          "id": "plus_y",
+          "label": "Vertical position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 = top edge of the tile, 100 = bottom edge."
+        },
+
+        { "type": "header", "content": "Mobile: plus position" },
+        {
+          "type": "range",
+          "id": "m_plus_x",
+          "label": "Horizontal position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 65,
+          "info": "0 = left edge of the tile, 100 = right edge."
+        },
+        {
+          "type": "range",
+          "id": "m_plus_y",
+          "label": "Vertical position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 14,
+          "info": "0 = top edge of the tile, 100 = bottom edge."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CP Grid",
+      "blocks": [
+        { "type": "tile", "settings": { "plus_x": 62, "plus_y": 56 } },
+        { "type": "tile", "settings": { "plus_x": 85, "plus_y": 52 } },
+        { "type": "tile", "settings": { "plus_x": 63, "plus_y": 20 } },
+        { "type": "tile", "settings": { "plus_x": 73, "plus_y": 18 } },
+        { "type": "tile", "settings": { "plus_x": 52, "plus_y": 11 } },
+        { "type": "tile", "settings": { "plus_x": 76, "plus_y": 24 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

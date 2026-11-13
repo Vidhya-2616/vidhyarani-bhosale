@@ -1,0 +1,277 @@
+{%- assign box_alpha = section.settings.box_opacity | divided_by: 100.0 -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap" rel="stylesheet">
+{{ 'cp-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'cp-banner.js' | asset_url }}" defer></script>
+
+<section
+  class="cp-banner"
+  id="cp-banner-{{ section.id }}"
+  style="
+    --cp-hero-height: {{ section.settings.hero_height }}px;
+    --cp-logo-width: {{ section.settings.logo_width }}px;
+    --cp-logo-color: {{ section.settings.logo_color }};
+    --cp-tagline-size: {{ section.settings.tagline_size }}px;
+    --cp-tagline-color: {{ section.settings.tagline_color }};
+    --cp-gift-size: {{ section.settings.topbar_button_size }}px;
+    --cp-gift-color: {{ section.settings.topbar_button_color }};
+    --cp-gift-bg: {{ section.settings.topbar_button_bg }};
+    --cp-gift-hover-bg: {{ section.settings.topbar_button_hover_bg }};
+    --cp-gift-hover-color: {{ section.settings.topbar_button_hover_color }};
+    --cp-heading-size: {{ section.settings.heading_size }}px;
+    --cp-heading-color: {{ section.settings.heading_color }};
+    --cp-text-size: {{ section.settings.text_size }}px;
+    --cp-text-color: {{ section.settings.text_color }};
+    --cp-shop-size: {{ section.settings.hero_button_size }}px;
+    --cp-shop-color: {{ section.settings.hero_button_color }};
+    --cp-shop-bg: {{ section.settings.hero_button_bg }};
+    --cp-shop-hover-bg: {{ section.settings.hero_button_hover_bg }};
+    --cp-shop-hover-color: {{ section.settings.hero_button_hover_color }};
+    --cp-box-bg: {{ section.settings.box_color | color_modify: 'alpha', box_alpha }};
+    --cp-box-pad-set: {{ section.settings.box_padding }}px;
+    --cp-bottom-size: {{ section.settings.bottom_size }}px;
+    --cp-bottom-pad: {{ section.settings.bottom_padding }}px;
+    --cp-bottom-color: {{ section.settings.bottom_color }};
+    --cp-topbar-bg: {{ section.settings.topbar_bg }};
+    --cp-hero-bg: {{ section.settings.hero_bg }};
+    --cp-bottombar-bg: {{ section.settings.bottombar_bg }};
+    --cp-m-logo-width: {{ section.settings.m_logo_width }}px;
+    --cp-m-icon-color: {{ section.settings.m_icon_color }};
+    --cp-m-tagline-size: {{ section.settings.m_tagline_size }}px;
+    --cp-m-tagline-color: {{ section.settings.m_tagline_color }};
+    --cp-m-gift-size: {{ section.settings.m_gift_size }}px;
+    --cp-m-gift-color: {{ section.settings.m_gift_color }};
+    --cp-m-heading-size: {{ section.settings.m_heading_size }}px;
+    --cp-m-heading-color: {{ section.settings.m_heading_color }};
+    --cp-m-text-size: {{ section.settings.m_text_size }}px;
+    --cp-m-text-color: {{ section.settings.m_text_color }};
+    --cp-m-shop-size: {{ section.settings.m_shop_size }}px;
+    --cp-m-shop-color: {{ section.settings.m_shop_color }};
+    --cp-m-bottom-size: {{ section.settings.m_bottom_size }}px;
+    --cp-m-bottom-color: {{ section.settings.m_bottom_color }};
+    --cp-m-header-bg: {{ section.settings.m_header_bg }};
+    --cp-m-panel-bg: {{ section.settings.m_panel_bg }};
+    --cp-m-hero-bg: {{ section.settings.m_hero_bg }};
+    --cp-m-bottombar-bg: {{ section.settings.m_bottombar_bg }};
+  "
+>
+
+  {%- comment -%} ===== DESKTOP TOP BAR (hidden on mobile) ===== {%- endcomment -%}
+  <div class="cp-banner__topbar">
+    <a class="cp-banner__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      {% render 'cp-logo' %}
+    </a>
+
+    <p class="cp-banner__tagline">{{ section.settings.tagline }}</p>
+
+    <a class="cp-btn cp-btn--gift" href="{{ section.settings.topbar_button_link | default: '#' }}">
+      <span>{{ section.settings.topbar_button_label }}</span>
+      {% render 'cp-arrow' %}
+    </a>
+  </div>
+
+  {%- comment -%} ===== MOBILE HEADER + MENU PANEL (hidden on desktop) ===== {%- endcomment -%}
+  <div class="cp-mnav" data-cp-menu>
+    <div class="cp-mnav__bar">
+      <button
+        type="button"
+        class="cp-mnav__toggle"
+        aria-expanded="false"
+        aria-controls="cp-panel-{{ section.id }}"
+        aria-label="Menu"
+        data-cp-menu-toggle
+      >
+        <svg class="cp-mnav__icon cp-mnav__icon--burger" width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden="true">
+          <path d="M0 1h18M0 5h18M0 9h18" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <svg class="cp-mnav__icon cp-mnav__icon--close" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M1 1l11 11M12 1L1 12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+
+      <a class="cp-banner__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        {% render 'cp-logo' %}
+      </a>
+    </div>
+
+    <div class="cp-mnav__panel" id="cp-panel-{{ section.id }}" data-cp-menu-panel>
+      <p class="cp-mnav__tagline">{{ section.settings.m_tagline }}</p>
+      <a class="cp-btn cp-btn--gift-m" href="{{ section.settings.topbar_button_link | default: '#' }}">
+        <span>{{ section.settings.m_gift_label }}</span>
+        {% render 'cp-arrow' %}
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} ===== HERO ===== {%- endcomment -%}
+  {%- assign show_box = section.settings.show_box -%}
+  <div class="cp-banner__hero">
+    <div class="cp-banner__media cp-banner__media--{{ section.settings.m_image_position }}">
+      {%- if section.settings.hero_image != blank -%}
+        {{
+          section.settings.hero_image
+          | image_url: width: 2880
+          | image_tag:
+            loading: 'eager',
+            widths: '1440, 1920, 2880',
+            sizes: '(min-width: 750px) 100vw, 686px',
+            class: 'cp-banner__img',
+            alt: section.settings.heading
+        }}
+      {%- else -%}
+        <div class="cp-banner__placeholder"></div>
+      {%- endif -%}
+    </div>
+
+    <div class="cp-banner__content{% if show_box %} cp-banner__content--boxed{% endif %}">
+      <h1 class="cp-banner__heading">
+        <span class="cp-d-only">{{ section.settings.heading }}</span>
+        <span class="cp-m-only">{{ section.settings.m_heading }}</span>
+      </h1>
+
+      <div class="cp-banner__text">
+        <span class="cp-d-only">{{ section.settings.text }}</span>
+        <span class="cp-m-only">{{ section.settings.m_text }}</span>
+      </div>
+
+      <a class="cp-btn cp-btn--shop" href="{{ section.settings.hero_button_link | default: '#' }}">
+        <span>
+          <span class="cp-d-only">{{ section.settings.hero_button_label }}</span>
+          <span class="cp-m-only">{{ section.settings.m_shop_label }}</span>
+        </span>
+        {% render 'cp-arrow' %}
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} ===== BOTTOM BAR ===== {%- endcomment -%}
+  <div class="cp-banner__bottombar">
+    <p>
+      <span class="cp-d-only">{{ section.settings.bottom_text }}</span>
+      <span class="cp-m-only">{{ section.settings.m_bottom_text }}</span>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CP Banner",
+  "settings": [
+    { "type": "header", "content": "Desktop: Top bar logo" },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 100, "max": 300, "step": 2, "unit": "px", "default": 152 },
+    { "type": "color", "id": "logo_color", "label": "Logo color", "default": "#000000" },
+
+    { "type": "header", "content": "Desktop: Top bar center text" },
+    { "type": "text", "id": "tagline", "label": "Text", "default": "Find the ideal gift for your loved ones." },
+    { "type": "range", "id": "tagline_size", "label": "Font size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "tagline_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Top bar button (desktop + mobile menu)" },
+    { "type": "text", "id": "topbar_button_label", "label": "Label", "default": "Choose gift" },
+    { "type": "url", "id": "topbar_button_link", "label": "Link" },
+    { "type": "range", "id": "topbar_button_size", "label": "Font size", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "topbar_button_color", "label": "Text and arrow color", "default": "#000000" },
+    { "type": "color", "id": "topbar_button_bg", "label": "Background color", "default": "#FFF544" },
+    { "type": "color", "id": "topbar_button_hover_bg", "label": "Hover slide color", "default": "#000000" },
+    { "type": "color", "id": "topbar_button_hover_color", "label": "Hover text and arrow color", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Hero image (desktop and mobile)" },
+    { "type": "image_picker", "id": "hero_image", "label": "Image" },
+    { "type": "range", "id": "hero_height", "label": "Desktop hero height", "min": 500, "max": 900, "step": 10, "unit": "px", "default": 780 },
+
+    { "type": "header", "content": "Desktop: Hero text background box" },
+    { "type": "checkbox", "id": "show_box", "label": "Show background box behind hero text", "default": false },
+    { "type": "color", "id": "box_color", "label": "Box color", "default": "#FFFFFF" },
+    { "type": "range", "id": "box_opacity", "label": "Box opacity", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "box_padding", "label": "Box padding", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Desktop: Hero heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Holiday Gift Guide" },
+    { "type": "range", "id": "heading_size", "label": "Font size", "min": 30, "max": 130, "step": 1, "unit": "px", "default": 70 },
+    { "type": "color", "id": "heading_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Desktop: Hero text" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Thoughtful, sustainable picks for everyone on your list, made to be loved all year long." },
+    { "type": "range", "id": "text_size", "label": "Font size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 20 },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Hero button (desktop + mobile)" },
+    { "type": "text", "id": "hero_button_label", "label": "Desktop label", "default": "Shop now" },
+    { "type": "url", "id": "hero_button_link", "label": "Link" },
+    { "type": "range", "id": "hero_button_size", "label": "Desktop font size", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "hero_button_color", "label": "Text and arrow color", "default": "#FFFFFF" },
+    { "type": "color", "id": "hero_button_bg", "label": "Background color", "default": "#000000" },
+    { "type": "color", "id": "hero_button_hover_bg", "label": "Hover slide color", "default": "#FFF544" },
+    { "type": "color", "id": "hero_button_hover_color", "label": "Hover text and arrow color", "default": "#000000" },
+
+    { "type": "header", "content": "Desktop: Bottom bar" },
+    { "type": "text", "id": "bottom_text", "label": "Text", "default": "Sustainable, ethically made clothes in sizes XXS to 6XL" },
+    { "type": "range", "id": "bottom_size", "label": "Font size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "bottom_padding", "label": "Top and bottom padding", "min": 6, "max": 30, "step": 1, "unit": "px", "default": 15 },
+    { "type": "color", "id": "bottom_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Desktop: Background colors" },
+    { "type": "color", "id": "topbar_bg", "label": "Top bar", "default": "#F5F5F5" },
+    { "type": "color", "id": "hero_bg", "label": "Hero (middle part)", "default": "#FFFFFF" },
+    { "type": "color", "id": "bottombar_bg", "label": "Bottom bar", "default": "#F5F5F5" },
+
+    { "type": "header", "content": "Mobile: Header" },
+    { "type": "range", "id": "m_logo_width", "label": "Logo width", "min": 100, "max": 200, "step": 1, "unit": "px", "default": 151 },
+    { "type": "color", "id": "m_icon_color", "label": "Menu icon color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Menu panel text" },
+    { "type": "text", "id": "m_tagline", "label": "Text", "default": "Find the ideal gift for your loved ones." },
+    { "type": "range", "id": "m_tagline_size", "label": "Font size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "m_tagline_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Menu panel button" },
+    { "type": "text", "id": "m_gift_label", "label": "Label", "default": "Choose gift" },
+    { "type": "range", "id": "m_gift_size", "label": "Font size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "m_gift_color", "label": "Text and arrow color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Hero image" },
+    {
+      "type": "select",
+      "id": "m_image_position",
+      "label": "Image crop position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+
+    { "type": "header", "content": "Mobile: Hero heading" },
+    { "type": "text", "id": "m_heading", "label": "Heading", "default": "The Gift Guide" },
+    { "type": "range", "id": "m_heading_size", "label": "Font size", "min": 20, "max": 60, "step": 1, "unit": "px", "default": 30 },
+    { "type": "color", "id": "m_heading_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Hero text" },
+    { "type": "textarea", "id": "m_text", "label": "Text", "default": "Thoughtful, sustainable picks for everyone on your list, made to be loved." },
+    { "type": "range", "id": "m_text_size", "label": "Font size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "m_text_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Hero button" },
+    { "type": "text", "id": "m_shop_label", "label": "Label", "default": "Shop now" },
+    { "type": "range", "id": "m_shop_size", "label": "Font size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "m_shop_color", "label": "Text and arrow color", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Mobile: Bottom bar" },
+    { "type": "text", "id": "m_bottom_text", "label": "Text", "default": "Sustainable, ethically made activewear" },
+    { "type": "range", "id": "m_bottom_size", "label": "Font size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "m_bottom_color", "label": "Text color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile: Background colors" },
+    { "type": "color", "id": "m_header_bg", "label": "Header (logo bar)", "default": "#F7F7F7" },
+    { "type": "color", "id": "m_panel_bg", "label": "Menu panel (Choose gift)", "default": "#F2F2F2" },
+    { "type": "color", "id": "m_hero_bg", "label": "Hero (middle part)", "default": "#FFFFFF" },
+    { "type": "color", "id": "m_bottombar_bg", "label": "Bottom bar", "default": "#F5F5F5" }
+  ],
+  "presets": [
+    { "name": "CP Banner" }
+  ]
+}
+{% endschema %}
