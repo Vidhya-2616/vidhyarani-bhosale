@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "banner": {
+      "type": "cp-banner",
+      "settings": {}
+    },
+    "cp_grid": {
+      "type": "cp-grid",
+      "blocks": {
+        "tile_1": { "type": "tile", "settings": { "plus_x": 62, "plus_y": 56 } },
+        "tile_2": { "type": "tile", "settings": { "plus_x": 85, "plus_y": 52 } },
+        "tile_3": { "type": "tile", "settings": { "plus_x": 63, "plus_y": 20 } },
+        "tile_4": { "type": "tile", "settings": { "plus_x": 73, "plus_y": 18 } },
+        "tile_5": { "type": "tile", "settings": { "plus_x": 52, "plus_y": 11 } },
+        "tile_6": { "type": "tile", "settings": { "plus_x": 76, "plus_y": 24 } }
+      },
+      "block_order": ["tile_1", "tile_2", "tile_3", "tile_4", "tile_5", "tile_6"],
+      "settings": {}
+    }
+  },
+  "order": ["banner", "cp_grid"]
+}
